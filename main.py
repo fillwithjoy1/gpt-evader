@@ -1,9 +1,10 @@
 import time
-
 import openai
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+percentage_threshold = 10
 
 openai.api_key = open('env', 'r').read()
 
@@ -32,5 +33,12 @@ text_area.send_keys(Keys.RETURN)
 # Click the button with class "scoreButton"
 score_button = driver.find_element(by=By.CLASS_NAME, value="scoreButton")
 score_button.click()
+
+# Wait for the result to arrive
+driver.implicitly_wait(10)
+result_card = driver.find_element(by=By.CLASS_NAME, value="result-card")
+percentage_div = result_card.find_element(by=By.CLASS_NAME, value="percentage-div")
+gpt_percentage = percentage_div.find_element(by=By.CLASS_NAME, value="header-text").text
+print(float(gpt_percentage.split('\n')[0].split('%')[0]))
 
 time.sleep(100)
